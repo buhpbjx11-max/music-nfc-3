@@ -199,6 +199,11 @@
     100% { background-position: 300% 50%; }
   }
 
+ @keyframes holoBtn {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+ 
   .progress-thumb {
     position: absolute;
     top: 50%;
@@ -251,16 +256,29 @@
   .btn:hover { color: #ccc; transform: scale(1.1); }
   .btn:active { transform: scale(0.95); }
 
-  .btn-play {
-    width: 60px;
-    height: 60px;
-    background: #e74c3c;
-    color: #fff;
-    border-radius: 50%;
-    box-shadow: 0 4px 20px rgba(231,76,60,0.4);
-  }
+ .btn-play {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  color: #fff;
 
-  .btn-play:hover { background: #c0392b; color: #fff; transform: scale(1.05); }
+  background: linear-gradient(135deg,
+    #ff00cc,
+    #7b61ff,
+    #00e5ff,
+    #00ff88);
+
+  background-size: 300% 300%;
+  animation: holoBtn 4s linear infinite;
+
+  box-shadow:
+    0 0 20px rgba(123,97,255,0.6),
+    0 0 40px rgba(0,229,255,0.4);
+}
+
+  .btn-play:hover {
+  transform: scale(1.08);
+}
 
   .volume-row {
     display: flex;
@@ -292,25 +310,29 @@
   }
 
   .volume-fill {
-    height: 100%;
-    background: #e74c3c;
-    border-radius: 2px;
-    width: 80%;
-    pointer-events: none;
-  }
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg,
+    #ff6ec7, #a78bfa, #38bdf8, #34d399, #facc15, #ff6ec7);
+  background-size: 300% 100%;
+  animation: holo 3s linear infinite;
+}
 
-  .volume-thumb {
-    position: absolute;
-    top: 50%;
-    left: 80%;
-    transform: translate(-50%, -50%);
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #e74c3c;
-    pointer-events: none;
-    z-index: 2;
-  }
+.volume-thumb {
+  position: absolute;
+  top: 50%;
+  left: 80%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 10px rgba(123,97,255,0.8),
+    0 0 20px rgba(0,229,255,0.6);
+  pointer-events: none;
+  z-index: 2;
+}
 
   @media (max-width: 420px) {
     .player-card { padding: 28px 20px 24px; }
@@ -468,28 +490,53 @@
   }
 
   function makeDraggable(wrap, onValue) {
-    function getRatio(clientX) {
-      const rect = wrap.getBoundingClientRect();
-      return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    }
+  function getRatio(clientX) {
+    const rect = wrap.getBoundingClientRect();
+    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+  }
 
-    let dragging = false;
+  let dragging = false;
 
-    wrap.addEventListener('mousedown', (e) => {
-      dragging = true;
-      wrap.classList.add('dragging');
-      onValue(getRatio(e.clientX));
-      e.preventDefault();
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (!dragging) return;
-      onValue(getRatio(e.clientX));
-    });
-    window.addEventListener('mouseup', () => {
-      if (!dragging) return;
-      dragging = false;
-      wrap.classList.remove('dragging');
-    });
+  // 👇 חשוב – קליק רגיל למחשב
+  wrap.addEventListener('click', (e) => {
+    onValue(getRatio(e.clientX));
+  });
+
+  wrap.addEventListener('mousedown', (e) => {
+    dragging = true;
+    wrap.classList.add('dragging');
+    e.preventDefault();
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    onValue(getRatio(e.clientX));
+  });
+
+  window.addEventListener('mouseup', () => {
+    dragging = false;
+    wrap.classList.remove('dragging');
+  });
+
+  // 📱 מובייל
+  wrap.addEventListener('touchstart', (e) => {
+    dragging = true;
+    wrap.classList.add('dragging');
+    onValue(getRatio(e.touches[0].clientX));
+    e.preventDefault();
+  }, { passive: false });
+
+  window.addEventListener('touchmove', (e) => {
+    if (!dragging) return;
+    onValue(getRatio(e.touches[0].clientX));
+    e.preventDefault();
+  }, { passive: false });
+
+  window.addEventListener('touchend', () => {
+    dragging = false;
+    wrap.classList.remove('dragging');
+  });
+}
 
     wrap.addEventListener('touchstart', (e) => {
       dragging = true;
