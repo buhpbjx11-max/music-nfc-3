@@ -1,4 +1,3 @@
-⁠ html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -131,6 +130,7 @@
   }
 
   .tonearm.playing { transform: rotate(-8deg); }
+
   .tonearm svg { width: 100%; height: 100%; }
 
   .track-info {
@@ -165,63 +165,20 @@
 
   .progress-bar-wrap {
     width: 100%;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
-    touch-action: none;
-  }
-
-  .progress-track {
-    position: absolute;
-    left: 0; right: 0;
     height: 4px;
     background: #2a2a2a;
     border-radius: 2px;
-    overflow: hidden;
-    pointer-events: none;
+    cursor: pointer;
+    position: relative;
   }
 
   .progress-fill {
     height: 100%;
     border-radius: 2px;
+    background: #e74c3c;
     width: 0%;
-    background: linear-gradient(90deg,
-      #ff6ec7, #a78bfa, #38bdf8, #34d399, #facc15, #ff6ec7);
-    background-size: 300% 100%;
-    animation: holo 3s linear infinite;
+    transition: width 0.3s linear;
     pointer-events: none;
-  }
-
-  @keyframes holo {
-    0%   { background-position: 0% 50%; }
-    100% { background-position: 300% 50%; }
-  }
-
- @keyframes holoBtn {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 300% 50%; }
-}
- 
-  .progress-thumb {
-    position: absolute;
-    top: 50%;
-    left: 0%;
-    transform: translate(-50%, -50%);
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 0 6px rgba(167,139,250,0.8), 0 0 2px rgba(0,0,0,0.6);
-    pointer-events: none;
-    z-index: 2;
-    transition: transform 0.1s;
-  }
-
-  .progress-bar-wrap:active .progress-thumb,
-  .progress-bar-wrap.dragging .progress-thumb {
-    transform: translate(-50%, -50%) scale(1.3);
   }
 
   .progress-times {
@@ -256,29 +213,16 @@
   .btn:hover { color: #ccc; transform: scale(1.1); }
   .btn:active { transform: scale(0.95); }
 
- .btn-play {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  color: #fff;
+  .btn-play {
+    width: 60px;
+    height: 60px;
+    background: #e74c3c;
+    color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 4px 20px rgba(231,76,60,0.4);
+  }
 
-  background: linear-gradient(135deg,
-    #ff00cc,
-    #7b61ff,
-    #00e5ff,
-    #00ff88);
-
-  background-size: 300% 300%;
-  animation: holoBtn 4s linear infinite;
-
-  box-shadow:
-    0 0 20px rgba(123,97,255,0.6),
-    0 0 40px rgba(0,229,255,0.4);
-}
-
-  .btn-play:hover {
-  transform: scale(1.08);
-}
+  .btn-play:hover { background: #c0392b; color: #fff; transform: scale(1.05); }
 
   .volume-row {
     display: flex;
@@ -289,50 +233,35 @@
 
   .volume-icon { color: #555; flex-shrink: 0; }
 
-  .volume-bar-wrap {
+  .volume-slider {
     flex: 1;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
-    touch-action: none;
-  }
-
-  .volume-track {
-    position: absolute;
-    left: 0; right: 0;
+    -webkit-appearance: none;
+    appearance: none;
     height: 3px;
     background: #2a2a2a;
     border-radius: 2px;
-    overflow: hidden;
-    pointer-events: none;
+    outline: none;
+    cursor: pointer;
   }
 
-  .volume-fill {
-  height: 100%;
-  border-radius: 2px;
-  background: linear-gradient(90deg,
-    #ff6ec7, #a78bfa, #38bdf8, #34d399, #facc15, #ff6ec7);
-  background-size: 300% 100%;
-  animation: holo 3s linear infinite;
-}
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e74c3c;
+    cursor: pointer;
+    border: none;
+  }
 
-.volume-thumb {
-  position: absolute;
-  top: 50%;
-  left: 80%;
-  transform: translate(-50%, -50%);
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow:
-    0 0 10px rgba(123,97,255,0.8),
-    0 0 20px rgba(0,229,255,0.6);
-  pointer-events: none;
-  z-index: 2;
-}
+  .volume-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e74c3c;
+    cursor: pointer;
+    border: none;
+  }
 
   @media (max-width: 420px) {
     .player-card { padding: 28px 20px 24px; }
@@ -373,10 +302,7 @@
 
   <div class="progress-area">
     <div class="progress-bar-wrap" id="progressWrap">
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-      <div class="progress-thumb" id="progressThumb"></div>
+      <div class="progress-fill" id="progressFill"></div>
     </div>
     <div class="progress-times">
       <span id="currentTime">0:00</span>
@@ -411,12 +337,7 @@
     <svg class="volume-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
       <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
     </svg>
-    <div class="volume-bar-wrap" id="volumeWrap">
-      <div class="volume-track">
-        <div class="volume-fill" id="volumeFill"></div>
-      </div>
-      <div class="volume-thumb" id="volumeThumb"></div>
-    </div>
+    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.8">
     <svg class="volume-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
       <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
     </svg>
@@ -434,6 +355,7 @@
       src: "song.mp3",
       cover: "cover.jpg"
     },
+    // Add more tracks here:
     // {
     //   title: "Another Song",
     //   artist: "Another Artist",
@@ -442,142 +364,45 @@
     // },
   ];
 
-  const audio         = document.getElementById('audio');
-  const vinyl         = document.getElementById('vinyl');
-  const tonearm       = document.getElementById('tonearm');
-  const btnPlay       = document.getElementById('btnPlay');
-  const iconPlay      = document.getElementById('iconPlay');
-  const iconPause     = document.getElementById('iconPause');
-  const btnPrev       = document.getElementById('btnPrev');
-  const btnNext       = document.getElementById('btnNext');
-  const progressFill  = document.getElementById('progressFill');
-  const progressThumb = document.getElementById('progressThumb');
-  const progressWrap  = document.getElementById('progressWrap');
-  const currentTimeEl = document.getElementById('currentTime');
-  const totalTimeEl   = document.getElementById('totalTime');
-  const volumeWrap    = document.getElementById('volumeWrap');
-  const volumeFill    = document.getElementById('volumeFill');
-  const volumeThumb   = document.getElementById('volumeThumb');
-  const trackTitle    = document.getElementById('trackTitle');
-  const trackArtist   = document.getElementById('trackArtist');
-  const vinylImg      = document.querySelector('.vinyl-label img');
-  const vinylFallback = document.querySelector('.vinyl-label-fallback');
+  const audio        = document.getElementById('audio');
+  const vinyl        = document.getElementById('vinyl');
+  const tonearm      = document.getElementById('tonearm');
+  const btnPlay      = document.getElementById('btnPlay');
+  const iconPlay     = document.getElementById('iconPlay');
+  const iconPause    = document.getElementById('iconPause');
+  const btnPrev      = document.getElementById('btnPrev');
+  const btnNext      = document.getElementById('btnNext');
+  const progressFill = document.getElementById('progressFill');
+  const progressWrap = document.getElementById('progressWrap');
+  const currentTime  = document.getElementById('currentTime');
+  const totalTime    = document.getElementById('totalTime');
+  const volumeSlider = document.getElementById('volumeSlider');
+  const trackTitle   = document.getElementById('trackTitle');
+  const trackArtist  = document.getElementById('trackArtist');
+  const vinylImg     = document.querySelector('.vinyl-label img');
+  const vinylFallback= document.querySelector('.vinyl-label-fallback');
 
   let currentIndex = 0;
   let isPlaying = false;
-  let currentVolume = 0.8;
 
   function fmt(s) {
-    if (isNaN(s)) return '0:00';
     const m = Math.floor(s / 60);
     const sec = Math.floor(s % 60);
     return m + ':' + String(sec).padStart(2, '0');
   }
-
-  function setProgressUI(pct) {
-    pct = Math.max(0, Math.min(100, pct));
-    progressFill.style.width = pct + '%';
-    progressThumb.style.left = pct + '%';
-  }
-
-  function setVolumeUI(v) {
-    v = Math.max(0, Math.min(1, v));
-    currentVolume = v;
-    const pct = v * 100;
-    volumeFill.style.width = pct + '%';
-    volumeThumb.style.left = pct + '%';
-    try { audio.volume = v; } catch(e) {}
-  }
-
-  function makeDraggable(wrap, onValue) {
-  function getRatio(clientX) {
-    const rect = wrap.getBoundingClientRect();
-    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-  }
-
-  let dragging = false;
-
-  // 👇 חשוב – קליק רגיל למחשב
-  wrap.addEventListener('click', (e) => {
-    onValue(getRatio(e.clientX));
-  });
-
-  wrap.addEventListener('mousedown', (e) => {
-    dragging = true;
-    wrap.classList.add('dragging');
-    e.preventDefault();
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!dragging) return;
-    onValue(getRatio(e.clientX));
-  });
-
-  window.addEventListener('mouseup', () => {
-    dragging = false;
-    wrap.classList.remove('dragging');
-  });
-
-  // 📱 מובייל
-  wrap.addEventListener('touchstart', (e) => {
-    dragging = true;
-    wrap.classList.add('dragging');
-    onValue(getRatio(e.touches[0].clientX));
-    e.preventDefault();
-  }, { passive: false });
-
-  window.addEventListener('touchmove', (e) => {
-    if (!dragging) return;
-    onValue(getRatio(e.touches[0].clientX));
-    e.preventDefault();
-  }, { passive: false });
-
-  window.addEventListener('touchend', () => {
-    dragging = false;
-    wrap.classList.remove('dragging');
-  });
-}
-
-    wrap.addEventListener('touchstart', (e) => {
-      dragging = true;
-      wrap.classList.add('dragging');
-      onValue(getRatio(e.touches[0].clientX));
-      e.preventDefault();
-    }, { passive: false });
-    window.addEventListener('touchmove', (e) => {
-      if (!dragging) return;
-      onValue(getRatio(e.touches[0].clientX));
-      e.preventDefault();
-    }, { passive: false });
-    window.addEventListener('touchend', () => {
-      dragging = false;
-      wrap.classList.remove('dragging');
-    });
-  }
-
-  makeDraggable(progressWrap, (ratio) => {
-    if (!audio.duration) return;
-    audio.currentTime = ratio * audio.duration;
-    setProgressUI(ratio * 100);
-    currentTimeEl.textContent = fmt(audio.currentTime);
-  });
-
-  makeDraggable(volumeWrap, (ratio) => {
-    setVolumeUI(ratio);
-  });
 
   function loadTrack(index) {
     const t = TRACKS[index];
     trackTitle.textContent  = t.title;
     trackArtist.textContent = t.artist;
     audio.src = t.src;
+    audio.volume = parseFloat(volumeSlider.value);
     vinylImg.src = t.cover;
     vinylImg.style.display = '';
     vinylFallback.style.display = 'none';
-    setProgressUI(0);
-    setVolumeUI(currentVolume);
-    currentTimeEl.textContent = '0:00';
-    totalTimeEl.textContent   = '0:00';
+    progressFill.style.width = '0%';
+    currentTime.textContent = '0:00';
+    totalTime.textContent = '0:00';
   }
 
   function play() {
@@ -585,7 +410,7 @@
     isPlaying = true;
     vinyl.classList.add('playing');
     tonearm.classList.add('playing');
-    iconPlay.style.display  = 'none';
+    iconPlay.style.display = 'none';
     iconPause.style.display = '';
   }
 
@@ -594,7 +419,7 @@
     isPlaying = false;
     vinyl.classList.remove('playing');
     tonearm.classList.remove('playing');
-    iconPlay.style.display  = '';
+    iconPlay.style.display = '';
     iconPause.style.display = 'none';
   }
 
@@ -614,12 +439,13 @@
 
   audio.addEventListener('timeupdate', () => {
     if (!audio.duration) return;
-    setProgressUI((audio.currentTime / audio.duration) * 100);
-    currentTimeEl.textContent = fmt(audio.currentTime);
+    const pct = (audio.currentTime / audio.duration) * 100;
+    progressFill.style.width = pct + '%';
+    currentTime.textContent = fmt(audio.currentTime);
   });
 
   audio.addEventListener('loadedmetadata', () => {
-    totalTimeEl.textContent = fmt(audio.duration);
+    totalTime.textContent = fmt(audio.duration);
   });
 
   audio.addEventListener('ended', () => {
@@ -628,9 +454,17 @@
     play();
   });
 
+  progressWrap.addEventListener('click', (e) => {
+    const rect = progressWrap.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    audio.currentTime = ratio * audio.duration;
+  });
+
+  volumeSlider.addEventListener('input', () => {
+    audio.volume = parseFloat(volumeSlider.value);
+  });
+
   loadTrack(0);
-  setVolumeUI(0.8);
 </script>
 </body>
 </html>
- ⁠
